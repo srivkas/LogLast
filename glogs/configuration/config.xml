@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<parsingIstruction>
+	<FileConfig>
+		<filename>"filename1"</filename>
+		<pattern>"pattern1"</pattern>
+		<pattern>"pattern2"</pattern>
+		<pattern>"pattern3"</pattern>
+		<pattern>"pattern4"</pattern>
+	</FileConfig>
+	<FileConfig>
+		<filename>"filename2"</filename>
+		<pattern>"pattern1"</pattern>
+		<pattern>"pattern2"</pattern>
+		<pattern>"pattern3"</pattern>
+		<pattern>"pattern4"</pattern>
+	</FileConfig>
+</parsingIstruction>

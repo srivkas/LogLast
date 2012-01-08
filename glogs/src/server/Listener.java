@@ -25,7 +25,8 @@ import org.xml.sax.SAXException;
 public class Listener {
 	
     static int BUF_SZ = 1024;
-    static Map<SelectionKey,ArrayList<ByteBuffer>> logMessagesStorage = new HashMap<SelectionKey,ArrayList<ByteBuffer>>();
+    ArrayList<ByteBuffer> BuffersList = new ArrayList<ByteBuffer>();
+    static Map<SocketAddress,ArrayList<ByteBuffer>> logMessagesStorage ;
     static int port = 8340;
     
     class Con {
@@ -40,10 +41,12 @@ public class Listener {
    
     
     
-    public Listener (Map<SelectionKey,ArrayList<ByteBuffer>> logMessagesStorage)
+    public Listener (Map<SocketAddress, ArrayList<ByteBuffer>> cashStorage)
     {
-    	this.logMessagesStorage = logMessagesStorage;
+    	logMessagesStorage = cashStorage;
     }
+    
+    
     private void process() {
         try {
             Selector selector = Selector.open();
@@ -84,16 +87,27 @@ public class Listener {
         }
     }
 
+    
     private void read(SelectionKey key) throws IOException {
         DatagramChannel chan = (DatagramChannel)key.channel();
         Con con = (Con)key.attachment();
         
         DatagramPacket dp = new DatagramPacket(con.req.array(),BUF_SZ);
         con.sa = chan.receive(con.req);
+        ArrayList<ByteBuffer> Buffers =logMessagesStorage.get(con.sa);
         
-        
-        System.out.println(new String(con.req.array(), "UTF-8"));
-        //con.resp = Charset.forName( "UTF-8" ).newEncoder().encode(CharBuffer.wrap("send the same string"));
+        if (Buffers ==null)
+        {
+        	 Buffers = new  ArrayList<ByteBuffer>();
+        	 Buffers.add(con.req);
+        	 logMessagesStorage.put(con.sa,Buffers);
+        }
+        else
+        {
+        	logMessagesStorage.get(con.sa).add(con.req);
+        }
+       
+        System.out.println("IP and socket :"+con.sa+"\n"+new String(con.req.array(), "UTF-8"));
         con.req.clear();
     }
 
@@ -101,7 +115,9 @@ public class Listener {
 
    static public void main(String[] args) {
     	 
-         Listener svr = new Listener(logMessagesStorage);
+	     Map<SocketAddress,ArrayList<ByteBuffer>> CashStorage = new HashMap<SocketAddress,ArrayList<ByteBuffer>>();
+         Listener svr = new Listener(CashStorage);
+         
          svr.process();
     }
 }
