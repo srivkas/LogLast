@@ -26,11 +26,16 @@ import org.xml.sax.SAXException;
 
 public class Cash extends Thread {
 	
-	Mongo m = new Mongo( "localhost" , 27017 );
-	DB db = m.getDB( "mydb" );
+	//MongoDB attributes ----------------------------------------
+	private Mongo m;
+	private DB db ;
+	private DBCollection coll;
 	
-	//the reason that we are using a list of buffers is because of the cost of the append to old buffer
+	//HusHmap attributes ----------------------------------------
+	//the reason we are using a list of buffers is because of the cost of the append to old buffer
 	static Map<SocketAddress,ArrayList<ByteBuffer>> logMessagesStorage ;
+	
+	//XML attributes --------------------------------------------
 	ConfigurationFile configFile ;
 	
 	
@@ -43,7 +48,11 @@ public class Cash extends Thread {
 	public Cash (Map<SocketAddress,ArrayList<ByteBuffer>> LogMessagesStorage ) throws ParserConfigurationException, SAXException, IOException
 	{
 		this.logMessagesStorage = LogMessagesStorage ;
-		//this.configFile = new ConfigurationFile("/glogs/configuration/config.xml");
+		
+		
+		this.m  = new Mongo( "localhost" , 27017 );
+		this.db = m.getDB( "mydb" );
+		this.coll= db.getCollection("testCollection");
 	}
 	
 	
@@ -92,13 +101,19 @@ public class Cash extends Thread {
 						
 						// get the file name of the message :
 						String strMessage = message.toString();
+						
 						if ( strMessage.matches("file name : [a-zA-Z0-9]*)"))
 						{
 							String temp = strMessage.split("file name : [a-zA-Z0-9]*)").toString();
 							
-							
-							
-							
+							BasicDBObject doc = new BasicDBObject();
+							doc.put("date", "11/04/1990");
+							doc.put("time", "09:07:09.385");
+							doc.put("function", "CCPServlet");
+							doc.put("unknownAttribute", "qtp9521674-29");
+					        doc.put("type", "INFO");
+					        doc.put("Message", "Transaction get configuration");
+					        coll.insert(doc);
 						}
 						
 					}
@@ -109,6 +124,8 @@ public class Cash extends Thread {
 				
 			}
 		}
+		
+	//this.db.dropDatabase();
 	}
 	
 	/*------------------------------------------------------------------------------------
