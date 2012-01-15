@@ -13,14 +13,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.MongoException;
 
 
-public class mongoDB {
+public class mongoDBInsertion {
 
 	
-	
-	/**
-	 * @param args
-	 */
-	
+
 	private static Mongo m;
 	private static DB db ;
 	private static DBCollection coll;
@@ -45,12 +41,7 @@ public class mongoDB {
         	coll.insert(doc);
         }
         
-        /*DBCursor cur = coll.find();
-
-        while(cur.hasNext()) {
-            System.out.println(cur.next());
-        }*/
-        db.dropDatabase();
+     
         DBCursor cur2 = coll.find();
 
         while(cur2.hasNext()) {
