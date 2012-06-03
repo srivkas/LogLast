@@ -2,6 +2,7 @@ package server;
 
 import java.awt.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PatternConfig {
 	public String fileName ="";
@@ -10,6 +11,7 @@ public class PatternConfig {
 	public PatternConfig() {
 		// TODO Auto-generated constructor stub
 		regexList = new ArrayList<String>();
+		//return Collections.unmodifiableList(regexList);
 	}
 	
 	public void addRegex(String regex)
